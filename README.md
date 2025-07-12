@@ -23,7 +23,8 @@ A lightweight Chrome extension that lets you **bookmark, rename, delete, and rep
    ```bash
    chrome://extensions/
 3. Enable Developer mode (toggle in the top right)
-4. Click Load unpacked and select the cloned project folder
+4. Click **Load unpacked** and upload the cloned project folder (bookmarker_extension)
+5. Reload the extension and see the magic
 
 ---
 ## 🎯 Usage
