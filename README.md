@@ -21,7 +21,7 @@ A lightweight Chrome extension that lets you **bookmark, rename, delete, and rep
    git clone https://github.com/your-username/youtube-bookmark-extension.git
 2. Open Chrome and navigate to
    ```bash
-      chrome://extensions/
+   chrome://extensions/
 3. Enable Developer mode (toggle in the top right)
 4. Click Load unpacked and select the cloned project folder
 
