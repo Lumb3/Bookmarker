@@ -19,7 +19,7 @@
           "assets/bookmark.png",
           "assets/play.png",
           "assets/delete.png",
-          "assets/save.png"
+          "assets/check.png"
         ],
         "matches": ["https://*.youtube.com/*"]
       }

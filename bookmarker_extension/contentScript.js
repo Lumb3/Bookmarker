@@ -48,22 +48,31 @@
   };
 
   const injectButton = () => {
-    const existing = document.getElementsByClassName(
-      "youtube-bookmark-button"
-    )[0];
-    if (existing) return;
+    if (document.querySelector(".youtube-bookmark-button")) return;
 
-    const controls = document.getElementsByClassName("ytp-left-controls")[0];
-    youtubePlayer = document.getElementsByClassName("video-stream")[0];
+    const controls = document.querySelector(".ytp-left-controls");
+    youtubePlayer = document.querySelector(".video-stream");
     if (!controls || !youtubePlayer) return;
 
     const bookmarkBtn = document.createElement("img");
-    bookmarkBtn.src = chrome.runtime.getURL("assets/bookmark.png");
+    const bookmarkIcon = chrome.runtime.getURL("assets/bookmark.png");
+    const saveIcon = chrome.runtime.getURL("assets/check.png");
+
+    bookmarkBtn.src = bookmarkIcon;
     bookmarkBtn.className = "youtube-bookmark-button";
     bookmarkBtn.title = "Click to bookmark current timestamp";
     bookmarkBtn.style.cursor = "pointer";
 
-    bookmarkBtn.addEventListener("click", addBookmarkEvent);
+    bookmarkBtn.addEventListener("click", () => {
+      bookmarkBtn.src = saveIcon;
+
+      addBookmarkEvent();
+
+      setTimeout(() => {
+        bookmarkBtn.src = bookmarkIcon;
+      }, 1000);
+    });
+
     controls.appendChild(bookmarkBtn);
   };
 
