@@ -1,6 +1,8 @@
 # 🎥 YouTube Bookmark Extension
 
-A lightweight Chrome extension that lets you **bookmark, rename, delete, and replay** key moments in YouTube videos — perfect for learners, content creators, and anyone who wants to revisit important timestamps with ease.
+A lightweight Chrome extension that lets you **bookmark, rename, delete, and replay** key moments in YouTube videos — perfect for learners, content creators, and anyone who wants to revisit important timestamps with ease. 
+
+This project demonstrates key concepts in **DOM manipulation**, **Chrome Extension APIs**, and **Chrome Storage**.
 
 ---
 
