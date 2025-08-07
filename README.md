@@ -40,7 +40,7 @@ Initial state of the extension popup
 <div align="center"> <img src="https://github.com/user-attachments/assets/977893bb-2f42-4726-bfd6-2d3049846bc3" width="750" /> </div>
 
 After pressing the blue "Add" button — a timestamp is saved automatically
-<img width="1703" height="934" alt="Bookmark added after clicking the button" src="https://github.com/user-attachments/assets/49ef3d50-fcbd-475a-b063-6d980150d545" />
+<img width="750" alt="Bookmark added after clicking the button" src="https://github.com/user-attachments/assets/49ef3d50-fcbd-475a-b063-6d980150d545" />
 
 Renaming a saved bookmark
-<div align="center"> <img src="https://github.com/user-attachments/assets/49ef3d50-fcbd-475a-b063-6d980150d545" width="750" /> </div>
+<div align="center"> <img src="https://github.com/user-attachments/assets/5c9666e7-275a-4560-9e40-01a2a97a9001" width="750" /> </div>
