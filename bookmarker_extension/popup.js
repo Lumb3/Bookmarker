@@ -23,7 +23,7 @@ const onDelete = async (e) => {
     chrome.storage.sync.set(
       { [currentVideo]: JSON.stringify(updatedBookmarks) },
       () => {
-        viewBookmarks(updatedBookmarks); 
+        viewBookmarks(updatedBookmarks);
       }
     );
   });
@@ -125,9 +125,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       viewBookmarks(videoBookmarks);
     });
   } else {
-    const title = document.getElementsByClassName("title")[0];
-    if (title) {
-      title.textContent = "This is not a YouTube video page.";
-    }
+    window.location.href = "not-youtube.html";
   }
 });
