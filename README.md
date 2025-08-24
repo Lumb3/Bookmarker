@@ -2,7 +2,7 @@
 
 A lightweight Chrome extension that lets you **bookmark, rename, delete, and replay** key moments in YouTube videos — perfect for learners, content creators, and anyone who wants to revisit important timestamps with ease. 
 
-This project demonstrates key concepts in **DOM manipulation**, **Chrome Extension APIs**, and **Chrome Storage**.
+This project demonstrates key concepts in **DOM manipulation**, **Chrome Extension APIs**, and **Chrome Storage**. To build this extension, industry level version control, Git, is used for tracking the source code and debugging. 
 
 ---
 
@@ -12,7 +12,6 @@ This project demonstrates key concepts in **DOM manipulation**, **Chrome Extensi
 - 📝 Rename bookmarks with custom titles  
 - 🗑️ Delete bookmarks you no longer need  
 - ▶️ Play bookmarks to jump instantly to saved moments  
-- ☁️ Sync bookmarks across devices using Chrome Storage API  
 
 ---
 
@@ -36,7 +35,8 @@ This project demonstrates key concepts in **DOM manipulation**, **Chrome Extensi
 
 ## 🖼️ Images
 Extension visible on a non-YouTube page (not going to work)
-<div align="center"> <img src="https://github.com/user-attachments/assets/41c6e2b4-7da6-46c8-af8e-8df964e8330d" width="750" /> </div>
+<div align="center"><img width="750" src="https://github.com/user-attachments/assets/f513ec09-1235-44eb-bd74-b622f6867e78" /></div>
+
 
 Initial state of the extension popup
 <div align="center"> <img src="https://github.com/user-attachments/assets/977893bb-2f42-4726-bfd6-2d3049846bc3" width="750" /> </div>
