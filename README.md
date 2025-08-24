@@ -35,8 +35,7 @@ This project demonstrates key concepts in **DOM manipulation**, **Chrome Extensi
 
 ## 🖼️ Images
 Extension visible on a non-YouTube page (not going to work)
-<div align="center"><img width="750" src="https://github.com/user-attachments/assets/f513ec09-1235-44eb-bd74-b622f6867e78" /></div>
-
+<div align="center"><img width="750" src="https://github.com/user-attachments/assets/164048ff-0600-473c-8324-8d8f54ff77c5" /></div>
 
 Initial state of the extension popup
 <div align="center"> <img src="https://github.com/user-attachments/assets/977893bb-2f42-4726-bfd6-2d3049846bc3" width="750" /> </div>
