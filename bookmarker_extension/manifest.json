@@ -33,5 +33,12 @@
       "default_title": "My YT Bookmarks",
       "default_popup": "popup.html"
     },
+    "icons": {
+      "16": "assets/ext-icon.png",
+      "24": "assets/ext-icon.png",
+      "32": "assets/ext-icon.png",
+      "48": "assets/ext-icon.png",
+      "128": "assets/ext-icon.png"
+    },
     "manifest_version": 3
 }
