@@ -19,7 +19,7 @@ This project demonstrates key concepts in **DOM manipulation**, **Chrome Extensi
 
 1. Clone this repository:  
    ```bash
-   git clone https://github.com/your-username/youtube-bookmark-extension.git
+   git clone [https://github.com/your-username/youtube-bookmark-extension.git](https://github.com/Lumb3/Bookmarker.git)
 2. Open Chrome and navigate to
    ```bash
    chrome://extensions/
