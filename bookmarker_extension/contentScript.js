@@ -74,7 +74,7 @@
     cursor: pointer;
     background: transparent;
     border: none;
-    font-size: 40px;
+    font-size: 30px;
     padding: 0;
     margin: 0 8px;
     display: flex;

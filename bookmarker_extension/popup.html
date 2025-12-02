@@ -1,49 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="popup.css" rel="stylesheet" type="text/css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-    />
-    <title>YT Bookmarks</title>
-  </head>
-  <body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookmarker</title>
+    <link rel="stylesheet" href="popup.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
     <div class="container">
-      <!-- Navigation Tabs -->
-      <div class="tabs">
-        <button class="tab-button active" data-tab="current">
-          <i class="fa-solid fa-bookmark"></i>
-          Current Video
-        </button>
-        <button class="tab-button" data-tab="history">
-          <i class="fa-solid fa-clock-rotate-left"></i>
-          History
-        </button>
-      </div>
+        <header>
+            <h1>Bookmarker</h1>
+            <p>Save your favorite YouTube moments</p>
+        </header>
 
-      <!-- Current Video Tab -->
-      <div id="current-tab" class="tab-content active">
-        <div class="video-info" id="video-info"></div>
-        <div class="bookmarks" id="bookmarks"></div>
-      </div>
+        <section class="add-bookmark">
+            <input type="text" id="bookmark-title" placeholder="Enter title for latest bookmark">
+            <button id="save-btn">Save</button>
+        </section>
 
-      <!-- History Tab -->
-      <div id="history-tab" class="tab-content">
-        <div class="search-box">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input 
-            type="text" 
-            id="search-input" 
-            placeholder="Search videos..." 
-            autocomplete="off"
-          />
-        </div>
-        <div class="video-list" id="video-list"></div>
-      </div>
+        <section class="bookmark-list">
+            <h2>Saved Timestamps</h2>
+            <ul id="bookmarks">
+                <!-- Bookmarks will appear here -->
+            </ul>
+        </section>
     </div>
-  </body>
-  <script type="module" src="popup.js"></script>
+    <script src="popup.js"></script>
+</body>
 </html>
