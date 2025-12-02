@@ -4,15 +4,44 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="popup.css" rel="stylesheet" type="text/css" />
-
-    <title>Bookmarker</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <title>YT Bookmarks</title>
   </head>
   <body>
     <div class="container">
-      <div>
-        <div class="title">Your bookmarks for this video</div>
+      <!-- Navigation Tabs -->
+      <div class="tabs">
+        <button class="tab-button active" data-tab="current">
+          <i class="fa-solid fa-bookmark"></i>
+          Current Video
+        </button>
+        <button class="tab-button" data-tab="history">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          History
+        </button>
+      </div>
 
+      <!-- Current Video Tab -->
+      <div id="current-tab" class="tab-content active">
+        <div class="video-info" id="video-info"></div>
         <div class="bookmarks" id="bookmarks"></div>
+      </div>
+
+      <!-- History Tab -->
+      <div id="history-tab" class="tab-content">
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input 
+            type="text" 
+            id="search-input" 
+            placeholder="Search videos..." 
+            autocomplete="off"
+          />
+        </div>
+        <div class="video-list" id="video-list"></div>
       </div>
     </div>
   </body>

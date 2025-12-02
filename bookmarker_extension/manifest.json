@@ -1,7 +1,7 @@
 {
   "name": "My YT Bookmarks",
-  "version": "0.1.0",
-  "description": "Saving timestamps in YT videos",
+  "version": "0.2.0",
+  "description": "Save and manage your favorite YouTube moments",
   "permissions": ["storage", "tabs"],
   "host_permissions": ["https://*.youtube.com/*"],
   "background": {
@@ -15,30 +15,25 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": [
-        "assets/bookmark.png",
-        "assets/play.png",
-        "assets/delete.png",
-        "assets/check.png"
-      ],
+      "resources": [],
       "matches": ["https://*.youtube.com/*"]
     }
   ],
   "action": {
     "default_icon": {
-      "16": "assets/ext-icon.png",
-      "24": "assets/ext-icon.png",
-      "32": "assets/ext-icon.png"
+      "16": "assets/icon.png",
+      "24": "assets/icon.png",
+      "32": "assets/icon.png"
     },
     "default_title": "My YT Bookmarks",
     "default_popup": "popup.html"
   },
   "icons": {
-    "16": "assets/ext-icon.png",
-    "24": "assets/ext-icon.png",
-    "32": "assets/ext-icon.png",
-    "48": "assets/ext-icon.png",
-    "128": "assets/ext-icon.png"
+    "16": "assets/icon.png",
+    "24": "assets/icon.png",
+    "32": "assets/icon.png",
+    "48": "assets/icon.png",
+    "128": "assets/icon.png"
   },
   "manifest_version": 3
 }
