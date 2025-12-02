@@ -54,26 +54,31 @@
     youtubePlayer = document.querySelector(".video-stream");
     if (!controls || !youtubePlayer) return;
 
-    const bookmarkBtn = document.createElement("img");
-    const bookmarkIcon = chrome.runtime.getURL("assets/bookmark.png");
-    const saveIcon = chrome.runtime.getURL("assets/check.png");
+    const faLink = document.createElement("link");
+    faLink.rel = "stylesheet";
+    faLink.href =
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css";
+    document.head.appendChild(faLink);
 
-    bookmarkBtn.src = bookmarkIcon;
-    bookmarkBtn.className = "youtube-bookmark-button";
-    bookmarkBtn.title = "Click to bookmark current timestamp";
-    bookmarkBtn.style.cursor = "pointer";
+    const button = document.createElement("button");
+    button.title = "Click to bookmark";
+    button.style.cursor = "pointer";
+    button.style.background = "transparent";
+    button.style.border = "none";
+    button.style.fontSize = "40px";
+    button.innerHTML = `<i class="fa-solid fa-plus" style="color: #B197FC;"></i>`;
 
-    bookmarkBtn.addEventListener("click", () => {
-      bookmarkBtn.src = saveIcon;
+    button.addEventListener("click", () => {
+      button.innerHTML = `<i class="fa-solid fa-check" style="color: #B197FC;"></i>`;
 
       addBookmarkEvent();
-
+      // Revert back to the plus icon after 1 second
       setTimeout(() => {
-        bookmarkBtn.src = bookmarkIcon;
+        button.innerHTML = `<i class="fa-solid fa-plus" style="color: #B197FC;"></i>`;
       }, 1000);
     });
 
-    controls.appendChild(bookmarkBtn);
+    controls.appendChild(button);
   };
 
   const handleNewVideo = async () => {
