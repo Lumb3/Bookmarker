@@ -36,6 +36,7 @@
     const newBookmark = {
       time: currentTime,
       desc: `Bookmark at ${getTime(currentTime)}`,
+      note: ""
     };
 
     currentVideoBookmarks = await fetchBookmarks();

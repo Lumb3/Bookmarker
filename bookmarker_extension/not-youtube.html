@@ -32,30 +32,6 @@
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     }
 
-    .header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 24px;
-      text-align: center;
-    }
-
-    .header i {
-      font-size: 48px;
-      margin-bottom: 12px;
-      opacity: 0.9;
-    }
-
-    .header h1 {
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .header p {
-      font-size: 13px;
-      opacity: 0.9;
-    }
-
     .content {
       padding: 24px;
     }
@@ -158,44 +134,18 @@
       background: #dee2e6;
       transform: translateY(-2px);
     }
-
-    .features {
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid #e9ecef;
-    }
-
-    .feature {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-      font-size: 12px;
-      color: #4a5568;
-    }
-
-    .feature i {
-      color: #667eea;
-      font-size: 16px;
-      width: 20px;
-      text-align: center;
-    }
+  
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <i class="fa-brands fa-youtube"></i>
-      <h1>YT Bookmarks</h1>
-      <p>Save and manage your favorite YouTube moments</p>
-    </div>
 
     <div class="content">
       <div class="warning-box">
         <i class="fa-solid fa-exclamation-triangle"></i>
         <div class="warning-text">
           <h2>Not on a YouTube Video Page</h2>
-          <p>This extension works on YouTube video pages. Please navigate to a video first.</p>
+          <p>This extension works on YouTube video pages. Please go to a video first.</p>
         </div>
       </div>
 
@@ -217,29 +167,7 @@
           <i class="fa-brands fa-youtube"></i>
           Go to YouTube
         </button>
-        <button class="btn btn-secondary" id="view-history">
-          <i class="fa-solid fa-clock-rotate-left"></i>
-          View Bookmark History
-        </button>
       </div>
-
-      <div class="features">
-        <div class="feature">
-          <i class="fa-solid fa-bookmark"></i>
-          <span>Save unlimited bookmarks per video</span>
-        </div>
-        <div class="feature">
-          <i class="fa-solid fa-pen"></i>
-          <span>Edit bookmark descriptions</span>
-        </div>
-        <div class="feature">
-          <i class="fa-solid fa-clock-rotate-left"></i>
-          <span>Access all your bookmarked videos</span>
-        </div>
-        <div class="feature">
-          <i class="fa-solid fa-play"></i>
-          <span>Jump to bookmarked moments instantly</span>
-        </div>
       </div>
     </div>
   </div>

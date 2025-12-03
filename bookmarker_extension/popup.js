@@ -52,72 +52,150 @@ const onEdit = async (e) => {
 
     bookmarks[index].desc = newDesc.trim();
 
-    chrome.storage.sync.set({ [currentVideo]: JSON.stringify(bookmarks) }, () => {
-      viewBookmarks(bookmarks);
-    });
+    chrome.storage.sync.set(
+      { [currentVideo]: JSON.stringify(bookmarks) },
+      () => {
+        viewBookmarks(bookmarks);
+      }
+    );
   });
 };
 
 const addNewBookmark = (container, bookmark) => {
+  // Creating the main bookmark element
   const newBookmark = document.createElement("div");
   newBookmark.className = "bookmark";
   newBookmark.id = `bookmark-${bookmark.time}`;
   newBookmark.setAttribute("timestamp", bookmark.time);
 
+  // Title section
   const title = document.createElement("div");
   title.textContent = bookmark.desc;
   title.className = "bookmark-title";
 
+  // Controls section
   const controls = document.createElement("div");
   controls.className = "bookmark-controls";
 
+  // Check Font Awesome
   if (!document.querySelector('link[href*="font-awesome"]')) {
     const faLink = document.createElement("link");
     faLink.rel = "stylesheet";
-    faLink.href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css";
+    faLink.href =
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css";
     document.head.appendChild(faLink);
   }
 
+  // Play button
   const playBtn = document.createElement("button");
-  playBtn.innerHTML = `<i class="fa-solid fa-play" style="color: #FF33CFFF;"></i>`;
-  playBtn.className = "icon play";
+  playBtn.innerHTML = `<i class="fa-solid fa-play"></i>`;
+  playBtn.className = "icon-btn play-btn";
   playBtn.title = "Play";
-  playBtn.style.border = "none";
-  playBtn.style.fontSize = "15px";
-  playBtn.style.background = "transparent";
-  playBtn.style.cursor = "pointer";
   playBtn.dataset.time = bookmark.time;
 
+  // Delete button
   const deleteBtn = document.createElement("button");
-  deleteBtn.innerHTML = `<i class="fa-solid fa-trash" style="color: #FF33CFFF;"></i>`;
-  deleteBtn.className = "icon delete";
+  deleteBtn.innerHTML = `<i class="fa-solid fa-trash"></i>`;
+  deleteBtn.className = "icon-btn delete-btn";
   deleteBtn.title = "Delete";
-  deleteBtn.style.border = "none";
-  deleteBtn.style.fontSize = "15px";
-  deleteBtn.style.background = "transparent";
-  deleteBtn.style.cursor = "pointer";
   deleteBtn.dataset.time = bookmark.time;
 
+  // Edit button
   const editBtn = document.createElement("button");
-  editBtn.innerHTML = `<i class="fa-solid fa-pen-to-square" style="color: #FF33CFFF;"></i>`;
-  editBtn.className = "icon edit";
+  editBtn.innerHTML = `<i class="fa-solid fa-pen-to-square"></i>`;
+  editBtn.className = "icon-btn edit-btn";
   editBtn.title = "Edit title";
-  editBtn.style.border = "none";
-  editBtn.style.fontSize = "15px";
-  editBtn.style.background = "transparent";
-  editBtn.style.cursor = "pointer";
   editBtn.dataset.time = bookmark.time;
 
+  // Note button
+  const noteBtn = document.createElement("button");
+  const hasNote = bookmark.note && bookmark.note.trim().length > 0;
+  noteBtn.innerHTML = hasNote 
+    ? `<i class="fa-solid fa-comment"></i>` 
+    : `<i class="fa-regular fa-comment"></i>`;
+  noteBtn.className = `icon-btn note-btn ${hasNote ? 'has-note' : ''}`;
+  noteBtn.title = hasNote ? "View/Edit note" : "Add note";
+  noteBtn.dataset.time = bookmark.time;
+
+  // Note container (hidden by default)
+  const noteContainer = document.createElement("div");
+  noteContainer.className = "note-container";
+  noteContainer.style.display = "none";
+
+  const noteTextarea = document.createElement("textarea");
+  noteTextarea.className = "note-textarea";
+  noteTextarea.placeholder = "Add your notes here...";
+  noteTextarea.value = bookmark.note || "";
+  noteTextarea.rows = 3;
+
+  const noteActions = document.createElement("div");
+  noteActions.className = "note-actions";
+
+  const saveNoteBtn = document.createElement("button");
+  saveNoteBtn.textContent = "Save";
+  saveNoteBtn.className = "note-save-btn";
+
+  const cancelNoteBtn = document.createElement("button");
+  cancelNoteBtn.textContent = "Cancel";
+  cancelNoteBtn.className = "note-cancel-btn";
+
+  noteActions.appendChild(saveNoteBtn);
+  noteActions.appendChild(cancelNoteBtn);
+  noteContainer.appendChild(noteTextarea);
+  noteContainer.appendChild(noteActions);
+
+  // Event listeners
   playBtn.addEventListener("click", onPlay);
   deleteBtn.addEventListener("click", onDelete);
   editBtn.addEventListener("click", onEdit);
 
+  noteBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isVisible = noteContainer.style.display === "block";
+    noteContainer.style.display = isVisible ? "none" : "block";
+    if (!isVisible) {
+      noteTextarea.focus();
+    }
+  });
+
+  saveNoteBtn.addEventListener("click", () => {
+    chrome.storage.sync.get([currentVideo], (data) => {
+      let bookmarks = data[currentVideo] ? JSON.parse(data[currentVideo]) : [];
+      const index = bookmarks.findIndex((b) => b.time == bookmark.time);
+      if (index !== -1) {
+        bookmarks[index].note = noteTextarea.value.trim();
+        chrome.storage.sync.set(
+          { [currentVideo]: JSON.stringify(bookmarks) },
+          () => {
+            // Update the button appearance
+            const hasNote = bookmarks[index].note.length > 0;
+            noteBtn.innerHTML = hasNote 
+              ? `<i class="fa-solid fa-comment"></i>` 
+              : `<i class="fa-regular fa-comment"></i>`;
+            noteBtn.className = `icon-btn note-btn ${hasNote ? 'has-note' : ''}`;
+            noteBtn.title = hasNote ? "View/Edit note" : "Add note";
+            
+            noteContainer.style.display = "none";
+          }
+        );
+      }
+    });
+  });
+
+  cancelNoteBtn.addEventListener("click", () => {
+    noteTextarea.value = bookmark.note || "";
+    noteContainer.style.display = "none";
+  });
+
+  // Assemble the bookmark
   controls.appendChild(playBtn);
-  controls.appendChild(deleteBtn);
+  controls.appendChild(noteBtn);
   controls.appendChild(editBtn);
+  controls.appendChild(deleteBtn);
 
   newBookmark.appendChild(title);
   newBookmark.appendChild(controls);
+  newBookmark.appendChild(noteContainer);
   container.appendChild(newBookmark);
 };
 
@@ -132,10 +210,10 @@ const viewBookmarks = (bookmarks = []) => {
   }
 };
 
-// NEW: Function to refresh bookmarks from storage
+// Function to refresh bookmarks from storage
 const refreshBookmarks = () => {
   if (!currentVideo) return;
-  
+
   chrome.storage.sync.get([currentVideo], (data) => {
     const videoBookmarks = data[currentVideo]
       ? JSON.parse(data[currentVideo])
@@ -144,10 +222,9 @@ const refreshBookmarks = () => {
   });
 };
 
-// Listens the chrome storage
+// Listen for chrome storage changes
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName === "sync" && changes[currentVideo]) {
-    // Update bookmarks when current video's bookmarks change
     refreshBookmarks();
   }
 });
