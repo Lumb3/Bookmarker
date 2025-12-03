@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bookmarker</title>
+    <title>Bookmarker Pro</title>
     <link rel="stylesheet" href="popup.css" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
     <link
@@ -15,39 +15,126 @@
     />
   </head>
   <body>
-    <div class="main-container">
-      <div class="container">
-        <header>
-          <div class="header-content">
-            <div>
+    <div class="app-container">
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Header -->
+        <header class="app-header">
+          <div class="header-left">
+            <div class="logo-container">
+              <i class="fas fa-bookmark logo-icon"></i>
               <h1>Bookmarker</h1>
-              <p>Your saved YouTube moments</p>
             </div>
-            <button id="sidebar-toggle" class="sidebar-toggle-btn" title="Show bookmarked videos">
-              <i class="fa-solid fa-chevron-left"></i>
+            <p class="tagline">Save & organize your YouTube moments</p>
+          </div>
+          <div class="header-actions">
+            <button
+              id="sidebar-toggle"
+              class="nav-toggle-btn"
+              title="View all bookmarks"
+            >
+              <i class="fas fa-bars"></i>
+              <span class="nav-toggle-text">Videos</span>
             </button>
           </div>
         </header>
 
-        <section class="bookmark-list">
-          <div id="bookmarks"></div>
+        <!-- Current Video Info -->
+        <div class="current-video-card">
+          <div class="video-info-header">
+            <i class="fas fa-play-circle"></i>
+            <h3>Current Video Bookmarks</h3>
+          </div>
+          <div class="bookmark-stats">
+            <div class="stat-item">
+              <span class="stat-count" id="bookmark-count">0</span>
+              <span class="stat-label">Bookmarks</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-count" id="note-count">0</span>
+              <span class="stat-label">Notes</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bookmarks Section -->
+        <section class="bookmarks-section">
+          <div class="section-header">
+            <h2><i class="fas fa-star"></i> Saved Moments</h2>
+            <div class="section-actions">
+              <button class="sort-btn" id="sort-time">
+                <i class="fas fa-sort-amount-up"></i> Time
+              </button>
+              <button class="sort-btn" id="sort-name">
+                <i class="fas fa-sort-alpha-down"></i> Name
+              </button>
+            </div>
+          </div>
+
+          <div class="bookmarks-container">
+            <div id="bookmarks" class="bookmarks-grid"></div>
+
+            <div class="empty-state" id="empty-state">
+              <div class="empty-state-icon">
+                <i class="fas fa-bookmark"></i>
+              </div>
+              <h3>No Bookmarks Yet</h3>
+              <p>
+                Click the extension icon while watching a YouTube video to add
+                bookmarks
+              </p>
+              <button class="cta-btn" id="how-to-use">
+                <i class="fas fa-play-circle"></i> How to Use
+              </button>
+            </div>
+          </div>
         </section>
-      </div>
+      </main>
 
       <!-- Sidebar -->
-      <div id="sidebar" class="sidebar">
+      <aside id="sidebar" class="sidebar">
         <div class="sidebar-header">
-          <h2>
-            <i class="fa-solid fa-video"></i>
-            Bookmarked Videos
-          </h2>
+          <div class="sidebar-title">
+            <i class="fas fa-video"></i>
+            <h2>Bookmarked Videos</h2>
+          </div>
+          <button class="close-sidebar" id="close-sidebar">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
+
         <div class="sidebar-content">
-          <div id="video-list"></div>
+          <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input
+              type="text"
+              id="video-search"
+              placeholder="Search videos..."
+              class="search-input"
+            />
+          </div>
+
+          <div class="video-stats">
+            <span class="total-videos">
+              <i class="fas fa-video"></i>
+              <span id="total-videos">0</span> Videos
+            </span>
+            <span class="total-bookmarks">
+              <i class="fas fa-bookmark"></i>
+              <span id="total-bookmarks">0</span> Bookmarks
+            </span>
+          </div>
+
+          <div id="video-list" class="video-list"></div>
+
         </div>
-      </div>
+      </aside>
+
+      <!-- Overlay -->
+      <div class="overlay" id="overlay"></div>
     </div>
 
     <script type="module" src="popup.js"></script>
+    <script type="module" src="features.js"></script>
   </body>
 </html>

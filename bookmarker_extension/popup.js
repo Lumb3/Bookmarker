@@ -2,14 +2,26 @@ import { getCurrentTab } from "./utils.js";
 
 let currentVideo = "";
 let allVideos = {};
+let toggleBtn = null;
 
 const onPlay = async (e) => {
   const time = e.target.dataset.time || e.target.parentElement.dataset.time;
   const activeTab = await getCurrentTab();
-  chrome.tabs.sendMessage(activeTab.id, {
-    type: "PLAY",
-    value: parseFloat(time),
-  });
+  chrome.tabs.sendMessage(
+    activeTab.id,
+    {
+      type: "PLAY",
+      value: parseFloat(time),
+    },
+    (response) => {
+      if (chrome.runtime.lastError) {
+        console.error(
+          "Error sending message to content script:",
+          chrome.runtime.lastError.message
+        );
+      }
+    }
+  );
 };
 
 const onDelete = async (e) => {
@@ -112,10 +124,10 @@ const addNewBookmark = (container, bookmark) => {
   // Note button
   const noteBtn = document.createElement("button");
   const hasNote = bookmark.note && bookmark.note.trim().length > 0;
-  noteBtn.innerHTML = hasNote 
-    ? `<i class="fa-solid fa-comment"></i>` 
+  noteBtn.innerHTML = hasNote
+    ? `<i class="fa-solid fa-comment"></i>`
     : `<i class="fa-regular fa-comment"></i>`;
-  noteBtn.className = `icon-btn note-btn ${hasNote ? 'has-note' : ''}`;
+  noteBtn.className = `icon-btn note-btn ${hasNote ? "has-note" : ""}`;
   noteBtn.title = hasNote ? "View/Edit note" : "Add note";
   noteBtn.dataset.time = bookmark.time;
 
@@ -170,13 +182,16 @@ const addNewBookmark = (container, bookmark) => {
           { [currentVideo]: JSON.stringify(bookmarks) },
           () => {
             // Update the button appearance
-            const hasNote = bookmarks[index].note.length > 0;
-            noteBtn.innerHTML = hasNote 
-              ? `<i class="fa-solid fa-comment"></i>` 
+            const hasNote =
+              bookmarks[index].note && bookmarks[index].note.trim().length > 0;
+            noteBtn.innerHTML = hasNote
+              ? `<i class="fa-solid fa-comment"></i>`
               : `<i class="fa-regular fa-comment"></i>`;
-            noteBtn.className = `icon-btn note-btn ${hasNote ? 'has-note' : ''}`;
+            noteBtn.className = `icon-btn note-btn ${
+              hasNote ? "has-note" : ""
+            }`;
             noteBtn.title = hasNote ? "View/Edit note" : "Add note";
-            
+
             noteContainer.style.display = "none";
           }
         );
@@ -228,10 +243,10 @@ const refreshBookmarks = () => {
 const loadAllVideos = () => {
   chrome.storage.sync.get(null, (data) => {
     allVideos = {};
-    
+
     for (const [key, value] of Object.entries(data)) {
-      // Only process video IDs (11 characters for YouTube video IDs)
-      if (key.length === 11) {
+      // Validate YouTube video ID (typically 11 characters, alphanumeric with - and _)
+      if (/^[a-zA-Z0-9_-]{10,12}$/.test(key)) {
         try {
           const bookmarks = JSON.parse(value);
           if (bookmarks.length > 0) {
@@ -242,7 +257,7 @@ const loadAllVideos = () => {
         }
       }
     }
-    
+
     displayVideoList();
   });
 };
@@ -251,9 +266,9 @@ const loadAllVideos = () => {
 const displayVideoList = () => {
   const videoListContainer = document.getElementById("video-list");
   videoListContainer.innerHTML = "";
-  
+
   const videoIds = Object.keys(allVideos);
-  
+
   if (videoIds.length === 0) {
     videoListContainer.innerHTML = `
       <div class="video-list-empty">
@@ -263,39 +278,51 @@ const displayVideoList = () => {
     `;
     return;
   }
-  
-  videoIds.forEach(videoId => {
+
+  videoIds.forEach((videoId) => {
     const bookmarks = allVideos[videoId];
     const isCurrentVideo = videoId === currentVideo;
-    
+
     const videoItem = document.createElement("div");
-    videoItem.className = `video-item ${isCurrentVideo ? 'active' : ''}`;
-    
+    videoItem.className = `video-item ${isCurrentVideo ? "active" : ""}`;
+
     const videoThumb = document.createElement("img");
-    videoThumb.className = "video-thumb";
+    videoThumb.className = "video-item-thumb";
     videoThumb.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
     videoThumb.alt = "Video thumbnail";
-    
+    videoThumb.loading = "lazy";
+
     const videoInfo = document.createElement("div");
-    videoInfo.className = "video-info";
-    
+    videoInfo.className = "video-item-info";
+
+    // Bookmark count - redesigned to match sidebar theme
     const bookmarkCount = document.createElement("div");
-    bookmarkCount.className = "bookmark-count";
-    bookmarkCount.innerHTML = `<i class="fa-solid fa-bookmark"></i> ${bookmarks.length}`;
-    
+    bookmarkCount.className = "video-item-bookmarks";
+    bookmarkCount.innerHTML = `
+      <i class="fa-solid fa-bookmark"></i>
+      <span class="bookmark-count-number">${bookmarks.length}</span>
+    `;
+
+    // Video link - redesigned to match sidebar theme
     const videoLink = document.createElement("a");
     videoLink.href = `https://www.youtube.com/watch?v=${videoId}`;
     videoLink.target = "_blank";
-    videoLink.className = "video-link";
+    videoLink.rel = "noopener noreferrer";
+    videoLink.className = "video-item-action-btn";
     videoLink.title = "Open in YouTube";
     videoLink.innerHTML = `<i class="fa-solid fa-external-link-alt"></i>`;
-    
+
+    // Add tooltip for bookmark count
+    bookmarkCount.title = `${bookmarks.length} ${
+      bookmarks.length === 1 ? "bookmark" : "bookmarks"
+    }`;
+
     videoInfo.appendChild(bookmarkCount);
     videoInfo.appendChild(videoLink);
-    
+
     videoItem.appendChild(videoThumb);
     videoItem.appendChild(videoInfo);
-    
+
     videoListContainer.appendChild(videoItem);
   });
 };
@@ -303,9 +330,8 @@ const displayVideoList = () => {
 // Toggle sidebar
 const toggleSidebar = () => {
   const sidebar = document.getElementById("sidebar");
-  const toggleBtn = document.getElementById("sidebar-toggle");
   const isOpen = sidebar.classList.contains("open");
-  
+
   if (isOpen) {
     sidebar.classList.remove("open");
     toggleBtn.innerHTML = `<i class="fa-solid fa-chevron-left"></i>`;
@@ -316,6 +342,14 @@ const toggleSidebar = () => {
     toggleBtn.title = "Hide bookmarked videos";
     loadAllVideos(); // Refresh list when opening
   }
+};
+
+// Close sidebar function
+const closeSidebar = () => {
+  const sidebar = document.getElementById("sidebar");
+  sidebar.classList.remove("open");
+  toggleBtn.innerHTML = `<i class="fa-solid fa-chevron-left"></i>`;
+  toggleBtn.title = "Show bookmarked videos";
 };
 
 // Listen for chrome storage changes
@@ -339,28 +373,27 @@ document.addEventListener("DOMContentLoaded", async () => {
   const url = new URL(currentTab.url);
   currentVideo = url.searchParams.get("v");
 
-  if (currentTab.url.includes("youtube.com/watch") && currentVideo) {
+  // More robust YouTube URL check
+  const isYouTubeWatch =
+    currentTab.url.includes("youtube.com/watch") &&
+    currentVideo &&
+    /^[a-zA-Z0-9_-]{10,12}$/.test(currentVideo);
+
+  if (isYouTubeWatch) {
     refreshBookmarks();
-    
-    // Setup sidebar toggle
-    const toggleBtn = document.getElementById("sidebar-toggle");
+
+    // Setup sidebar toggle button
+    toggleBtn = document.getElementById("sidebar-toggle");
     if (toggleBtn) {
       toggleBtn.addEventListener("click", toggleSidebar);
     }
+
+    // Setup close sidebar button
+    const closeSidebarBtn = document.getElementById("close-sidebar");
+    if (closeSidebarBtn) {
+      closeSidebarBtn.addEventListener("click", closeSidebar);
+    }
   } else {
     window.location.href = "not-youtube.html";
-  }
-});
-
-document.addEventListener("click", (e) => {
-  const sidebar = document.getElementById("sidebar");
-  const toggleBtn = document.getElementById("sidebar-toggle");
-
-  // If sidebar is open
-  if (sidebar.classList.contains("open")) {
-    // And the click is NOT inside the sidebar or the toggle button:
-    if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
-      toggleSidebar();
-    }
   }
 });
