@@ -15,15 +15,37 @@
     />
   </head>
   <body>
-    <div class="container">
-      <header>
-        <h1>Bookmarker</h1>
-        <p>Your saved YouTube moments</p>
-      </header>
+    <div class="main-container">
+      <div class="container">
+        <header>
+          <div class="header-content">
+            <div>
+              <h1>Bookmarker</h1>
+              <p>Your saved YouTube moments</p>
+            </div>
+            <button id="sidebar-toggle" class="sidebar-toggle-btn" title="Show bookmarked videos">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+          </div>
+        </header>
 
-      <section class="bookmark-list">
-        <div id="bookmarks"></div>
-      </section>
+        <section class="bookmark-list">
+          <div id="bookmarks"></div>
+        </section>
+      </div>
+
+      <!-- Sidebar -->
+      <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+          <h2>
+            <i class="fa-solid fa-video"></i>
+            Bookmarked Videos
+          </h2>
+        </div>
+        <div class="sidebar-content">
+          <div id="video-list"></div>
+        </div>
+      </div>
     </div>
 
     <script type="module" src="popup.js"></script>
