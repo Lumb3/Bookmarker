@@ -1,31 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bookmarker</title>
-    <link rel="stylesheet" href="popup.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
+    <link rel="stylesheet" href="popup.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+  </head>
+  <body>
     <div class="container">
-        <header>
-            <h1>Bookmarker</h1>
-            <p>Save your favorite YouTube moments</p>
-        </header>
+      <header>
+        <h1>Bookmarker</h1>
+        <p>Your saved YouTube moments</p>
+      </header>
 
-        <section class="add-bookmark">
-            <input type="text" id="bookmark-title" placeholder="Enter title for latest bookmark">
-            <button id="save-btn">Save</button>
-        </section>
-
-        <section class="bookmark-list">
-            <h2>Saved Timestamps</h2>
-            <ul id="bookmarks">
-                <!-- Bookmarks will appear here -->
-            </ul>
-        </section>
+      <section class="bookmark-list">
+        <div id="bookmarks"></div>
+      </section>
     </div>
-    <script src="popup.js"></script>
-</body>
+
+    <script type="module" src="popup.js"></script>
+  </body>
 </html>

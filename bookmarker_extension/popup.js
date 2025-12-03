@@ -1,23 +1,25 @@
 import { getCurrentTab } from "./utils.js";
 
+let currentVideo = "";
+
 const onPlay = async (e) => {
-  const time = e.target.dataset.time;
+  const time = e.target.dataset.time || e.target.parentElement.dataset.time;
   const activeTab = await getCurrentTab();
   chrome.tabs.sendMessage(activeTab.id, {
     type: "PLAY",
-    value: time,
+    value: parseFloat(time),
   });
 };
 
 const onDelete = async (e) => {
-  const time = e.target.dataset.time;
+  const time = e.target.dataset.time || e.target.parentElement.dataset.time;
   const activeTab = await getCurrentTab();
 
-  const queryParams = new URLSearchParams(activeTab.url.split("?")[1]);
-  const currentVideo = queryParams.get("v");
+  const url = new URL(activeTab.url);
+  currentVideo = url.searchParams.get("v");
 
   chrome.storage.sync.get([currentVideo], (data) => {
-    const bookmarks = JSON.parse(data[currentVideo] || "[]");
+    const bookmarks = data[currentVideo] ? JSON.parse(data[currentVideo]) : [];
     const updatedBookmarks = bookmarks.filter((b) => b.time != time);
 
     chrome.storage.sync.set(
@@ -30,14 +32,14 @@ const onDelete = async (e) => {
 };
 
 const onEdit = async (e) => {
-  const oldTime = e.target.dataset.time;
+  const oldTime = e.target.dataset.time || e.target.parentElement.dataset.time;
   const activeTab = await getCurrentTab();
 
-  const queryParams = new URLSearchParams(activeTab.url.split("?")[1]);
-  const videoId = queryParams.get("v");
+  const url = new URL(activeTab.url);
+  currentVideo = url.searchParams.get("v");
 
-  chrome.storage.sync.get([videoId], (data) => {
-    let bookmarks = JSON.parse(data[videoId] || "[]");
+  chrome.storage.sync.get([currentVideo], (data) => {
+    let bookmarks = data[currentVideo] ? JSON.parse(data[currentVideo]) : [];
     const index = bookmarks.findIndex((b) => b.time == oldTime);
     if (index === -1) return;
 
@@ -45,11 +47,12 @@ const onEdit = async (e) => {
       "Enter a new title for this bookmark:",
       bookmarks[index].desc
     );
-    if (!newDesc) return;
+    if (newDesc === null) return;
+    if (!newDesc.trim()) return;
 
-    bookmarks[index].desc = newDesc;
+    bookmarks[index].desc = newDesc.trim();
 
-    chrome.storage.sync.set({ [videoId]: JSON.stringify(bookmarks) }, () => {
+    chrome.storage.sync.set({ [currentVideo]: JSON.stringify(bookmarks) }, () => {
       viewBookmarks(bookmarks);
     });
   });
@@ -68,22 +71,41 @@ const addNewBookmark = (container, bookmark) => {
   const controls = document.createElement("div");
   controls.className = "bookmark-controls";
 
-  const playBtn = document.createElement("img");
-  playBtn.src = chrome.runtime.getURL("assets/play.png");
+  if (!document.querySelector('link[href*="font-awesome"]')) {
+    const faLink = document.createElement("link");
+    faLink.rel = "stylesheet";
+    faLink.href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css";
+    document.head.appendChild(faLink);
+  }
+
+  const playBtn = document.createElement("button");
+  playBtn.innerHTML = `<i class="fa-solid fa-play" style="color: #FF33CFFF;"></i>`;
   playBtn.className = "icon play";
   playBtn.title = "Play";
+  playBtn.style.border = "none";
+  playBtn.style.fontSize = "15px";
+  playBtn.style.background = "transparent";
+  playBtn.style.cursor = "pointer";
   playBtn.dataset.time = bookmark.time;
 
-  const deleteBtn = document.createElement("img");
-  deleteBtn.src = chrome.runtime.getURL("assets/delete.png");
+  const deleteBtn = document.createElement("button");
+  deleteBtn.innerHTML = `<i class="fa-solid fa-trash" style="color: #FF33CFFF;"></i>`;
   deleteBtn.className = "icon delete";
   deleteBtn.title = "Delete";
+  deleteBtn.style.border = "none";
+  deleteBtn.style.fontSize = "15px";
+  deleteBtn.style.background = "transparent";
+  deleteBtn.style.cursor = "pointer";
   deleteBtn.dataset.time = bookmark.time;
 
-  const editBtn = document.createElement("img");
-  editBtn.src = chrome.runtime.getURL("assets/edit.png");
+  const editBtn = document.createElement("button");
+  editBtn.innerHTML = `<i class="fa-solid fa-pen-to-square" style="color: #FF33CFFF;"></i>`;
   editBtn.className = "icon edit";
   editBtn.title = "Edit title";
+  editBtn.style.border = "none";
+  editBtn.style.fontSize = "15px";
+  editBtn.style.background = "transparent";
+  editBtn.style.cursor = "pointer";
   editBtn.dataset.time = bookmark.time;
 
   playBtn.addEventListener("click", onPlay);
@@ -106,24 +128,39 @@ const viewBookmarks = (bookmarks = []) => {
   if (bookmarks.length > 0) {
     bookmarks.forEach((b) => addNewBookmark(container, b));
   } else {
-    container.innerHTML = `<i class="row">No bookmarks to show</i>`;
+    container.innerHTML = `<div class="row">No bookmarks to show</div>`;
   }
 };
+
+// NEW: Function to refresh bookmarks from storage
+const refreshBookmarks = () => {
+  if (!currentVideo) return;
+  
+  chrome.storage.sync.get([currentVideo], (data) => {
+    const videoBookmarks = data[currentVideo]
+      ? JSON.parse(data[currentVideo])
+      : [];
+    viewBookmarks(videoBookmarks);
+  });
+};
+
+// Listens the chrome storage
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === "sync" && changes[currentVideo]) {
+    // Update bookmarks when current video's bookmarks change
+    refreshBookmarks();
+  }
+});
 
 document.addEventListener("DOMContentLoaded", async () => {
   const currentTab = await getCurrentTab();
   if (!currentTab || !currentTab.url) return;
 
-  const queryParams = new URLSearchParams(currentTab.url.split("?")[1]);
-  const currentVideo = queryParams.get("v");
+  const url = new URL(currentTab.url);
+  currentVideo = url.searchParams.get("v");
 
   if (currentTab.url.includes("youtube.com/watch") && currentVideo) {
-    chrome.storage.sync.get([currentVideo], (data) => {
-      const videoBookmarks = data[currentVideo]
-        ? JSON.parse(data[currentVideo])
-        : [];
-      viewBookmarks(videoBookmarks);
-    });
+    refreshBookmarks();
   } else {
     window.location.href = "not-youtube.html";
   }

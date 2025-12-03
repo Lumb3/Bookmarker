@@ -42,19 +42,24 @@
     currentVideoBookmarks.push(newBookmark);
     currentVideoBookmarks.sort((a, b) => a.time - b.time);
 
+    // NEW: Send notification that bookmarks were updated
     chrome.storage.sync.set({
       [currentVideo]: JSON.stringify(currentVideoBookmarks),
+    }, () => {
+      // Notify popup if it's open
+      chrome.runtime.sendMessage({
+        type: "BOOKMARKS_UPDATED",
+        videoId: currentVideo
+      });
     });
   };
 
   const injectButton = () => {
-    // Check and remove existing button FIRST
     const existingButton = document.querySelector(".youtube-bookmark-button");
     if (existingButton) {
       existingButton.remove();
     }
 
-    // Check if FontAwesome is already loaded
     if (!document.querySelector('link[href*="font-awesome"]')) {
       const faLink = document.createElement("link");
       faLink.rel = "stylesheet";
@@ -65,22 +70,27 @@
 
     const controls = document.querySelector(".ytp-left-controls");
     youtubePlayer = document.querySelector(".video-stream");
-    if (!controls || !youtubePlayer) return;
+    if (!controls || !youtubePlayer) {
+      setTimeout(injectButton, 500);
+      return;
+    }
 
     const button = document.createElement("button");
-    button.className = "youtube-bookmark-button"; // Add class for easy identification
+    button.className = "youtube-bookmark-button";
     button.title = "Click to bookmark";
     button.style.cssText = `
-    cursor: pointer;
-    background: transparent;
-    border: none;
-    font-size: 30px;
-    padding: 0;
-    margin: 0 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  `;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      font-size: 30px;
+      padding: 0;
+      margin: 0 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+    `;
 
     button.innerHTML = `<i class="fa-solid fa-plus" style="color: #B197FC;"></i>`;
 
@@ -88,7 +98,6 @@
       button.innerHTML = `<i class="fa-solid fa-check" style="color: #B197FC;"></i>`;
 
       addBookmarkEvent();
-      // Revert back to the plus icon after 1 second
       setTimeout(() => {
         button.innerHTML = `<i class="fa-solid fa-plus" style="color: #B197FC;"></i>`;
       }, 1000);
@@ -99,19 +108,30 @@
 
   const handleNewVideo = async () => {
     const urlParams = new URLSearchParams(window.location.search);
-    currentVideo = urlParams.get("v");
-    await loadBookmarks();
-    injectButton();
+    const newVideoId = urlParams.get("v");
+    
+    if (newVideoId !== currentVideo) {
+      currentVideo = newVideoId;
+      await loadBookmarks();
+      injectButton();
+    }
   };
 
   chrome.runtime.onMessage.addListener((msg, sender, response) => {
-    if (msg.type === "NEW Bookmark") {
-      handleNewVideo();
-    } else if (msg.type === "PLAY") {
-      if (youtubePlayer) youtubePlayer.currentTime = msg.value;
+    if (msg.type === "PLAY") {
+      if (youtubePlayer) youtubePlayer.currentTime = parseFloat(msg.value);
     }
   });
 
-  // Run when script loads
+  // Initial load
   handleNewVideo();
+
+  // Monitor for SPA navigation
+  const observer = new MutationObserver(() => {
+    if (!document.querySelector(".youtube-bookmark-button")) {
+      handleNewVideo();
+    }
+  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
 })();
