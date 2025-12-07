@@ -2,6 +2,7 @@
   let youtubePlayer;
   let currentVideo = "";
   let currentVideoBookmarks = [];
+  let isInitialized = false;
 
   const getTime = (time) => {
     const date = new Date(0);
@@ -11,6 +12,10 @@
 
   const fetchBookmarks = () => {
     return new Promise((resolve) => {
+      if (!currentVideo) {
+        resolve([]);
+        return;
+      }
       chrome.storage.sync.get([currentVideo], (data) => {
         resolve(data[currentVideo] ? JSON.parse(data[currentVideo]) : []);
       });
@@ -18,47 +23,49 @@
   };
 
   const loadBookmarks = async () => {
-    chrome.storage.sync.get([currentVideo], (data) => {
-      try {
-        currentVideoBookmarks = data[currentVideo]
-          ? JSON.parse(data[currentVideo])
-          : [];
-      } catch {
-        currentVideoBookmarks = [];
-      }
+    if (!currentVideo) return;
+
+    return new Promise((resolve) => {
+      chrome.storage.sync.get([currentVideo], (data) => {
+        try {
+          currentVideoBookmarks = data[currentVideo]
+            ? JSON.parse(data[currentVideo])
+            : [];
+        } catch {
+          currentVideoBookmarks = [];
+        }
+        resolve();
+      });
     });
   };
 
   const addBookmarkEvent = async () => {
-    if (!youtubePlayer) return;
+    if (!youtubePlayer || !currentVideo) {
+      console.error("Cannot add bookmark: video not initialized");
+      return;
+    }
+
     const currentTime = youtubePlayer.currentTime;
 
     const newBookmark = {
       time: currentTime,
       desc: `Bookmark at ${getTime(currentTime)}`,
-      note: ""
+      note: "",
     };
 
     currentVideoBookmarks = await fetchBookmarks();
     currentVideoBookmarks.push(newBookmark);
     currentVideoBookmarks.sort((a, b) => a.time - b.time);
 
-    // NEW: Send notification that bookmarks were updated
     chrome.storage.sync.set({
       [currentVideo]: JSON.stringify(currentVideoBookmarks),
-    }, () => {
-      // Notify popup if it's open
-      chrome.runtime.sendMessage({
-        type: "BOOKMARKS_UPDATED",
-        videoId: currentVideo
-      });
     });
   };
 
   const injectButton = () => {
     const existingButton = document.querySelector(".youtube-bookmark-button");
     if (existingButton) {
-      existingButton.remove();
+      return; // Button already exists, don't duplicate
     }
 
     if (!document.querySelector('link[href*="font-awesome"]')) {
@@ -71,6 +78,7 @@
 
     const controls = document.querySelector(".ytp-left-controls");
     youtubePlayer = document.querySelector(".video-stream");
+
     if (!controls || !youtubePlayer) {
       setTimeout(injectButton, 500);
       return;
@@ -95,24 +103,34 @@
 
     button.innerHTML = `<i class="fa-solid fa-plus" style="color: #B197FC;"></i>`;
 
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
+      if (!currentVideo) {
+        console.error("Video ID not ready");
+        return;
+      }
+
       button.innerHTML = `<i class="fa-solid fa-check" style="color: #B197FC;"></i>`;
 
-      addBookmarkEvent();
+      await addBookmarkEvent();
+
       setTimeout(() => {
         button.innerHTML = `<i class="fa-solid fa-plus" style="color: #B197FC;"></i>`;
       }, 1000);
     });
 
     controls.appendChild(button);
+    isInitialized = true;
   };
 
   const handleNewVideo = async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const newVideoId = urlParams.get("v");
-    
+
+    if (!newVideoId) return;
+
     if (newVideoId !== currentVideo) {
       currentVideo = newVideoId;
+      isInitialized = false;
       await loadBookmarks();
       injectButton();
     }
@@ -124,15 +142,28 @@
     }
   });
 
-  // Initial load
-  handleNewVideo();
+  // Initial load - wait for it to complete
+  const initialize = async () => {
+    await handleNewVideo();
 
-  // Monitor for SPA navigation
-  const observer = new MutationObserver(() => {
-    if (!document.querySelector(".youtube-bookmark-button")) {
-      handleNewVideo();
-    }
-  });
+    // Monitor for SPA navigation
+    const observer = new MutationObserver(() => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const videoId = urlParams.get("v");
 
-  observer.observe(document.body, { childList: true, subtree: true });
+      if (videoId && videoId !== currentVideo) {
+        handleNewVideo();
+      } else if (
+        !document.querySelector(".youtube-bookmark-button") &&
+        currentVideo
+      ) {
+        injectButton();
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+  };
+
+  // Start initialization
+  initialize();
 })();

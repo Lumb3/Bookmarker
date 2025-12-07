@@ -1,4 +1,11 @@
 import { getCurrentTab } from "./utils.js";
+import {
+  updateCurrentVideoCounters,
+  updateSidebarCounters,
+  initCounterListeners,
+  applySortToBookmarks,
+  initSortingButtons,
+} from "./features.js";
 
 let currentVideo = "";
 let allVideos = {};
@@ -40,6 +47,7 @@ const onDelete = async (e) => {
       () => {
         viewBookmarks(updatedBookmarks);
         loadAllVideos(); // Refresh video list
+        updateSidebarCounters(allVideos);
       }
     );
   });
@@ -82,10 +90,22 @@ const addNewBookmark = (container, bookmark) => {
   newBookmark.id = `bookmark-${bookmark.time}`;
   newBookmark.setAttribute("timestamp", bookmark.time);
 
+  // Header section
+  const header = document.createElement("div");
+  header.className = "bookmark-header";
+
   // Title section
   const title = document.createElement("div");
   title.textContent = bookmark.desc;
   title.className = "bookmark-title";
+
+  // Time badge
+  const timeBadge = document.createElement("div");
+  timeBadge.className = "bookmark-time";
+  timeBadge.textContent = formatTime(bookmark.time);
+
+  header.appendChild(title);
+  header.appendChild(timeBadge);
 
   // Controls section
   const controls = document.createElement("div");
@@ -193,6 +213,7 @@ const addNewBookmark = (container, bookmark) => {
             noteBtn.title = hasNote ? "View/Edit note" : "Add note";
 
             noteContainer.style.display = "none";
+            updateCurrentVideoCounters(currentVideo);
           }
         );
       }
@@ -210,20 +231,37 @@ const addNewBookmark = (container, bookmark) => {
   controls.appendChild(editBtn);
   controls.appendChild(deleteBtn);
 
-  newBookmark.appendChild(title);
+  newBookmark.appendChild(header);
   newBookmark.appendChild(controls);
   newBookmark.appendChild(noteContainer);
   container.appendChild(newBookmark);
 };
 
+// Format time in seconds to MM:SS or HH:MM:SS
+const formatTime = (seconds) => {
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+  
+  if (hrs > 0) {
+    return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+};
+
 const viewBookmarks = (bookmarks = []) => {
   const container = document.getElementById("bookmarks");
+  const emptyState = document.getElementById("empty-state");
+  
   container.innerHTML = "";
 
   if (bookmarks.length > 0) {
-    bookmarks.forEach((b) => addNewBookmark(container, b));
+    // Apply sorting before displaying
+    const sortedBookmarks = applySortToBookmarks(bookmarks);
+    sortedBookmarks.forEach((b) => addNewBookmark(container, b));
+    emptyState?.classList.remove('show');
   } else {
-    container.innerHTML = `<div class="row">No bookmarks to show</div>`;
+    emptyState?.classList.add('show');
   }
 };
 
@@ -259,6 +297,7 @@ const loadAllVideos = () => {
     }
 
     displayVideoList();
+    updateSidebarCounters(allVideos);
   });
 };
 
@@ -295,7 +334,7 @@ const displayVideoList = () => {
     const videoInfo = document.createElement("div");
     videoInfo.className = "video-item-info";
 
-    // Bookmark count - redesigned to match sidebar theme
+    // Bookmark count
     const bookmarkCount = document.createElement("div");
     bookmarkCount.className = "video-item-bookmarks";
     bookmarkCount.innerHTML = `
@@ -303,7 +342,7 @@ const displayVideoList = () => {
       <span class="bookmark-count-number">${bookmarks.length}</span>
     `;
 
-    // Video link - redesigned to match sidebar theme
+    // Video link
     const videoLink = document.createElement("a");
     videoLink.href = `https://www.youtube.com/watch?v=${videoId}`;
     videoLink.target = "_blank";
@@ -330,16 +369,15 @@ const displayVideoList = () => {
 // Toggle sidebar
 const toggleSidebar = () => {
   const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
   const isOpen = sidebar.classList.contains("open");
 
   if (isOpen) {
     sidebar.classList.remove("open");
-    toggleBtn.innerHTML = `<i class="fa-solid fa-chevron-left"></i>`;
-    toggleBtn.title = "Show bookmarked videos";
+    overlay.classList.remove("show");
   } else {
     sidebar.classList.add("open");
-    toggleBtn.innerHTML = `<i class="fa-solid fa-chevron-right"></i>`;
-    toggleBtn.title = "Hide bookmarked videos";
+    overlay.classList.add("show");
     loadAllVideos(); // Refresh list when opening
   }
 };
@@ -347,9 +385,9 @@ const toggleSidebar = () => {
 // Close sidebar function
 const closeSidebar = () => {
   const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
   sidebar.classList.remove("open");
-  toggleBtn.innerHTML = `<i class="fa-solid fa-chevron-left"></i>`;
-  toggleBtn.title = "Show bookmarked videos";
+  overlay.classList.remove("show");
 };
 
 // Listen for chrome storage changes
@@ -381,17 +419,32 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (isYouTubeWatch) {
     refreshBookmarks();
-
+    updateCurrentVideoCounters(currentVideo);
+    
+    // Initialize sorting buttons
+    initSortingButtons(refreshBookmarks);
+    
     // Setup sidebar toggle button
     toggleBtn = document.getElementById("sidebar-toggle");
     if (toggleBtn) {
       toggleBtn.addEventListener("click", toggleSidebar);
     }
+    
+    initCounterListeners(
+      () => currentVideo, // how to get current video
+      () => allVideos // how to get all videos
+    );
 
     // Setup close sidebar button
     const closeSidebarBtn = document.getElementById("close-sidebar");
     if (closeSidebarBtn) {
       closeSidebarBtn.addEventListener("click", closeSidebar);
+    }
+
+    // Setup overlay click to close
+    const overlay = document.getElementById("overlay");
+    if (overlay) {
+      overlay.addEventListener("click", closeSidebar);
     }
   } else {
     window.location.href = "not-youtube.html";
