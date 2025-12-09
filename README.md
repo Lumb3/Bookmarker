@@ -1,8 +1,8 @@
-# 🎥 YouTube Bookmark Extension
+# Youtube Bookmarker
 
-A lightweight Chrome extension that lets you **bookmark, rename, delete, and replay** key moments in YouTube videos — perfect for learners, content creators, and anyone who wants to revisit important timestamps with ease. 
+A lightweight Chrome extension that lets you **bookmark, rename, delete, and replay** key moments in YouTube videos — perfect for learners, content creators, and anyone who wants to revisit important timestamps with ease.
 
-This project demonstrates key concepts in **DOM manipulation**, **Chrome Extension APIs**, and **Chrome Storage**. To build this extension, industry level version control, **Git**, is used for tracking the source code and debugging. 
+This project demonstrates key concepts in **DOM manipulation**, **Chrome Extension APIs**, and **Chrome Storage**. It also uses industry-standard version control (**Git**) for tracking the source code and debugging.
 
 ---
 
@@ -18,30 +18,58 @@ This project demonstrates key concepts in **DOM manipulation**, **Chrome Extensi
 ## 🚀 Installation
 
 1. Clone this repository:  
-   ```bash
+   ```
    git clone https://github.com/Lumb3/Bookmarker.git
-2. Open Chrome and navigate to
-   ```bash
+   ```
+
+2. Open Chrome and navigate to:
+
+   ```
    chrome://extensions/
-3. Enable Developer mode (toggle in the top right)
-4. Click **Load unpacked** and upload the cloned project folder (bookmarker_extension)
-5. Reload the extension and see the magic
+   ```
+3. Enable **Developer mode** (toggle in the top right)
+4. Click **Load unpacked** and upload the cloned project folder (**bookmarker_extension**)
+5. Reload the extension and enjoy 🎉
 
 ---
+
 ## 🎯 Usage
-- Click the bookmark icon in the YouTube player controls to save the current timestamp
-- Open the extension popup to view your saved bookmarks
-- Use the ▶️ Play, ✏️ Edit, and 🗑️ Delete icons to manage bookmarks easily
 
-## 🖼️ Images
-Extension visible on a non-YouTube page (not going to work)
-<div align="center"><img width="750" src="https://github.com/user-attachments/assets/164048ff-0600-473c-8324-8d8f54ff77c5" /></div>
+* Click the bookmark icon in the YouTube player controls to save the current timestamp
+* Open the extension popup to view your saved bookmarks
+* Use the ▶️ Play, ✏️ Edit, 🗒️ Notes, and 🗑️ Delete icons to manage bookmarks easily
 
-Initial state of the extension popup
-<div align="center"> <img src="https://github.com/user-attachments/assets/977893bb-2f42-4726-bfd6-2d3049846bc3" width="750" /> </div>
+---
 
-After pressing the blue "Add" button — a timestamp is saved automatically
-<div align="center"> <img src="https://github.com/user-attachments/assets/49ef3d50-fcbd-475a-b063-6d980150d545" width="750" /> </div>
+## 🖼️ Screenshots
 
-Renaming a saved bookmark
-<div align="center"> <img src="https://github.com/user-attachments/assets/5c9666e7-275a-4560-9e40-01a2a97a9001" width="750" /> </div>
+### 📌 Extension on a non-YouTube page (inactive)
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/14e1f3e9-bd54-4b25-aa02-250b58d4a685" width="350" />
+</div>
+
+---
+
+### 📌 Initial popup state
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/0f37bfef-69e0-463f-a708-3736433559a3" width="350" />
+</div>
+
+---
+
+### 📌 After pressing the purple **Add** button
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/9de9b3ce-8a1b-4771-849a-a742e796a4f9" width="700"/>
+</div>
+
+---
+
+### 📌 Viewing previously saved bookmarks
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/cedc8914-fd9c-45c6-abb0-5684e850ad3a" width="350" />
+</div>
+
