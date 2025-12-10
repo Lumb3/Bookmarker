@@ -1,24 +1,27 @@
-# Youtube Bookmarker
+# YouTube Bookmarker
 
-A lightweight Chrome extension that lets you **bookmark, rename, delete, and replay** key moments in YouTube videos — perfect for learners, content creators, and anyone who wants to revisit important timestamps with ease.
+A lightweight Chrome extension that lets you **bookmark, rename, delete, replay, and take notes on any timestamp** in YouTube videos — perfect for learners, content creators, and anyone who wants to revisit important moments with ease.
 
-This project demonstrates key concepts in **DOM manipulation**, **Chrome Extension APIs**, and **Chrome Storage**. It also uses industry-standard version control (**Git**) for tracking the source code and debugging.
+This project demonstrates key concepts in **DOM manipulation**, **Chrome Extension APIs**, and **Chrome Storage**, along with industry-standard version control using **Git**.
 
 ---
 
 ## ✨ Features
 
-- 🔖 Add bookmarks at the current video timestamp  
-- 📝 Rename bookmarks with custom titles  
-- 🗑️ Delete bookmarks you no longer need  
-- ▶️ Play bookmarks to jump instantly to saved moments  
+* 🔖 Add bookmarks at the current video timestamp
+* 📝 Rename bookmarks with custom titles
+* 🗑️ Delete bookmarks you no longer need
+* 🗒️ Add notes to each timestamp
+* 📚 Sort bookmarks (Newest → Oldest or A → Z)
+* ▶️ Play bookmarks to jump instantly to saved moments
 
 ---
 
 ## 🚀 Installation
 
-1. Clone this repository:  
-   ```
+1. Clone this repository:
+
+   ```bash
    git clone https://github.com/Lumb3/Bookmarker.git
    ```
 
@@ -27,9 +30,12 @@ This project demonstrates key concepts in **DOM manipulation**, **Chrome Extensi
    ```
    chrome://extensions/
    ```
+
 3. Enable **Developer mode** (toggle in the top right)
-4. Click **Load unpacked** and upload the cloned project folder (**bookmarker_extension**)
-5. Reload the extension and enjoy 🎉
+
+4. Click **Load unpacked** and select the cloned project folder (**bookmarker_extension**)
+
+5. Reload the extension and you’re good to go 🎉
 
 ---
 
@@ -37,7 +43,7 @@ This project demonstrates key concepts in **DOM manipulation**, **Chrome Extensi
 
 * Click the bookmark icon in the YouTube player controls to save the current timestamp
 * Open the extension popup to view your saved bookmarks
-* Use the ▶️ Play, ✏️ Edit, 🗒️ Notes, and 🗑️ Delete icons to manage bookmarks easily
+* Use the ▶️ Play, ✏️ Edit, 🗒️ Notes, and 🗑️ Delete icons to manage each bookmark
 
 ---
 
@@ -62,7 +68,7 @@ This project demonstrates key concepts in **DOM manipulation**, **Chrome Extensi
 ### 📌 After pressing the purple **Add** button
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/9de9b3ce-8a1b-4771-849a-a742e796a4f9" width="700"/>
+  <img src="https://github.com/user-attachments/assets/9de9b3ce-8a1b-4771-849a-a742e796a4f9" width="700" />
 </div>
 
 ---
@@ -73,3 +79,4 @@ This project demonstrates key concepts in **DOM manipulation**, **Chrome Extensi
   <img src="https://github.com/user-attachments/assets/cedc8914-fd9c-45c6-abb0-5684e850ad3a" width="350" />
 </div>
 
+---
