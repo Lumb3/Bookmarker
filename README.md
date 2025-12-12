@@ -76,7 +76,7 @@ This project demonstrates key concepts in **DOM manipulation**, **Chrome Extensi
 ### 📌 Viewing previously saved bookmarks
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/cedc8914-fd9c-45c6-abb0-5684e850ad3a" width="350" />
+  <img src="https://github.com/user-attachments/assets/00b2a379-c7ec-4f75-bc77-4ffd351b0179" width="350" />
 </div>
 
 ---
